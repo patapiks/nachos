@@ -1,4 +1,4 @@
 [DEPLOY](https://nachos-five.vercel.app/)  
   
 ### TOOLS: react, hooks, react-hook-form
-<image src="./screenshot.png">
+<image src="./Screenshot.png">

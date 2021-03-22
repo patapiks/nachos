@@ -29,6 +29,7 @@ const Winners = () => {
           type="button"
           className={cn('filter__button', { active: state.prise === 'hoodie' })}
           onClick={() => {
+            if (state.prise === 'hoodie') return;
             setState({ page: 1, total_pages: null, prise: 'hoodie', count: 6, data: [] });
           }}
         >
@@ -38,24 +39,36 @@ const Winners = () => {
           type="button"
           className={cn('filter__button', { active: state.prise === 'jbl_speaker' })}
           onClick={() => {
+            if (state.prise === 'jbl_speaker') return;
             setState({ page: 1, total_pages: null, prise: 'jbl_speaker', count: 6, data: [] });
           }}
         >
           Еженедельный приз
         </button>
-        <button type="button" className="filter__button">
+        <button
+          type="button"
+          className={cn('filter__button', { active: state.prise === 'journey' })}
+          onClick={() => {
+            if (state.prise === 'journey') return;
+            setState({ page: 1, total_pages: null, prise: 'journey', count: 6, data: [] });
+          }}
+        >
           Главный приз
         </button>
       </div>
 
       <ul className="list">
-        {state.data.slice(0, state.count).map(({ phone, draw_period, prise, number }) => (
-          <li className="list__row" key={number}>
-            <div className="prize">{prise}</div>
-            <div className="phone-number">{phone}</div>
-            <div className="date">{draw_period}</div>
-          </li>
-        ))}
+        {state.data.length === 0 ? (
+          <div>Приз еще не разыгран</div>
+        ) : (
+          state.data.slice(0, state.count).map(({ phone, draw_period, prise, number }) => (
+            <li className="list__row" key={number}>
+              <div className="prize">{prise}</div>
+              <div className="phone-number">{phone}</div>
+              <div className="date">{draw_period}</div>
+            </li>
+          ))
+        )}
       </ul>
 
       {state.count >= state.data.length ? null : (

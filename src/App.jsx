@@ -18,7 +18,6 @@ const App = () => {
   return (
     <div className="container" ref={ref}>
       <Header />
-      <PhoneInput />
       <Winners />
     </div>
   );

@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from '../axios';
 import cn from 'classnames';
 
+import { useForm, Controller } from 'react-hook-form';
+import InputMask from 'react-input-mask';
+
 const Winners = () => {
   const [state, setState] = useState({
     page: 1,
@@ -9,6 +12,7 @@ const Winners = () => {
     prise: 'jbl_speaker',
     count: 6,
     data: [],
+    message: '',
   });
 
   useEffect(() => {
@@ -16,14 +20,44 @@ const Winners = () => {
       const response = await axios.get(`?page=${state.page}&prise=${state.prise}`);
       const { checks, page, total_pages } = response.data;
       setState((prev) => {
-        return { ...prev, page, total_pages, data: [...prev.data, ...checks] };
+        return {
+          ...prev,
+          page,
+          total_pages,
+          data: [...prev.data, ...checks],
+          message: 'Приз еще не разыгран',
+        };
       });
     }
     loadMore();
   }, [state.page, state.prise]);
 
+  const { handleSubmit, control, reset, setValue } = useForm();
+  const onSubmit = async ({ tel }) => {
+    const response = await axios.get(`?phone=${tel}`);
+    setState((prev) => {
+      const { checks } = response.data;
+      return { ...prev, data: checks, message: 'Ваш телефон не найден среди победителей' };
+    });
+    reset();
+    setValue('tel', '');
+  };
+
   return (
     <>
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <Controller
+          name="tel"
+          as={InputMask}
+          control={control}
+          defaultValue=""
+          mask="+7 (999) 999-99-99"
+          alwaysShowMask
+          className="form__input"
+        />
+        <button type="submit" className="form__button" />
+      </form>
+
       <div className="filter">
         <button
           type="button"
@@ -59,7 +93,7 @@ const Winners = () => {
 
       <ul className="list">
         {state.data.length === 0 ? (
-          <div>Приз еще не разыгран</div>
+          <div className="list__message">{state.message}</div>
         ) : (
           state.data.slice(0, state.count).map(({ phone, draw_period, prise, number }) => (
             <li className="list__row" key={number}>

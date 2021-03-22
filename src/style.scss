@@ -129,6 +129,15 @@ body {
   margin-bottom: 16px;
 
   width: 100%;
+  &__message {
+    text-align: center;
+    font-family: Fira Sans;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 16px;
+    color: #ffffff;
+  }
   &__row {
     div {
       margin-left: 24px;

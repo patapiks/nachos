@@ -32,7 +32,10 @@ const Mobile = () => {
     const response = await axios.get(`?phone=${tel}`);
     setState((prev) => {
       const { checks } = response.data;
-      return { ...prev, data: checks, message: 'Ваш телефон не найден среди победителей' };
+      if (checks.length === 0) {
+        return { ...prev, message: 'Ваш телефон не найден среди победителей' };
+      }
+      return { ...prev, data: checks, message: '' };
     });
     reset();
     setValue('tel', '');
@@ -53,24 +56,22 @@ const Mobile = () => {
         <button type="submit" className="form__button" />
       </form>
 
-      {state.data.length === 0 ? (
-        <div className="list__message">{state.message}</div>
-      ) : (
-        <Carousel indicators={false}>
-          {state.data.map(({ phone, draw_period, prise, number }) => (
-            <Carousel.Item key={number}>
-              <div className="mobileList">
-                <div className="mobileList__row">
-                  <img src={logo} alt="" />
-                  <div className="prize">{prise}</div>
-                  <div className="phone-number">{phone}</div>
-                  <div className="date">{draw_period}</div>
-                </div>
+      <div className="list__message">{state.message}</div>
+
+      <Carousel indicators={false}>
+        {state.data.map(({ phone, draw_period, prise, number }) => (
+          <Carousel.Item key={number}>
+            <div className="mobileList">
+              <div className="mobileList__row">
+                <img src={logo} alt="" />
+                <div className="prize">{prise}</div>
+                <div className="phone-number">{phone}</div>
+                <div className="date">{draw_period}</div>
               </div>
-            </Carousel.Item>
-          ))}
-        </Carousel>
-      )}
+            </div>
+          </Carousel.Item>
+        ))}
+      </Carousel>
     </>
   );
 };

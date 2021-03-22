@@ -6,17 +6,16 @@ import Winners from './components/Winners';
 
 const App = () => {
   const { width, ref } = useResizeDetector();
-  if (width < 430) {
-    return (
-      <div className="container" ref={ref}>
-        <Mobile />;
-      </div>
-    );
-  }
   return (
     <div className="container" ref={ref}>
-      <Header />
-      <Winners />
+      {width > 430 ? (
+        <React.Fragment>
+          <Header />
+          <Winners />
+        </React.Fragment>
+      ) : (
+        <Mobile />
+      )}
     </div>
   );
 };

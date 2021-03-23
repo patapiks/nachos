@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Carousel } from 'react-bootstrap';
 import axios from '../axios';
 import logo from '../img/JBL.png';
 
 import { useForm, Controller } from 'react-hook-form';
 import InputMask from 'react-input-mask';
+
+import Slider from 'react-slick';
 
 const Mobile = () => {
   const [state, setState] = useState({
@@ -41,6 +42,17 @@ const Mobile = () => {
     setValue('tel', '');
   };
 
+  const carouselSettings = {
+    centerPadding: '60px',
+    className: 'carousel',
+    centerMode: true,
+    arrows: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
@@ -58,20 +70,18 @@ const Mobile = () => {
 
       <div className="list__message">{state.message}</div>
 
-      <Carousel indicators={false}>
+      <Slider {...carouselSettings}>
         {state.data.map(({ phone, draw_period, prise, number }) => (
-          <Carousel.Item key={number}>
-            <div className="mobileList">
-              <div className="mobileList__row">
-                <img src={logo} alt="" />
-                <div className="prize">{prise}</div>
-                <div className="phone-number">{phone}</div>
-                <div className="date">{draw_period}</div>
-              </div>
+          <div className="mobileList" key={number}>
+            <div className="mobileList__row">
+              <img src={logo} alt="" />
+              <div className="prize">{prise}</div>
+              <div className="phone-number">{phone}</div>
+              <div className="date">{draw_period}</div>
             </div>
-          </Carousel.Item>
+          </div>
         ))}
-      </Carousel>
+      </Slider>
     </>
   );
 };

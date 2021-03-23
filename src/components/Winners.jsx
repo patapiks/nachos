@@ -43,6 +43,11 @@ const Winners = () => {
     setValue('tel', '');
   };
 
+  const handleFilter = (prise) => () => {
+    if (state.prise === prise) return;
+    setState({ page: 1, total_pages: null, prise, count: 6, data: [] });
+  };
+
   return (
     <>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
@@ -62,30 +67,21 @@ const Winners = () => {
         <button
           type="button"
           className={cn('filter__button', { active: state.prise === 'hoodie' })}
-          onClick={() => {
-            if (state.prise === 'hoodie') return;
-            setState({ page: 1, total_pages: null, prise: 'hoodie', count: 6, data: [] });
-          }}
+          onClick={handleFilter('hoodie')}
         >
           Ежедневный приз
         </button>
         <button
           type="button"
           className={cn('filter__button', { active: state.prise === 'jbl_speaker' })}
-          onClick={() => {
-            if (state.prise === 'jbl_speaker') return;
-            setState({ page: 1, total_pages: null, prise: 'jbl_speaker', count: 6, data: [] });
-          }}
+          onClick={handleFilter('jbl_speaker')}
         >
           Еженедельный приз
         </button>
         <button
           type="button"
           className={cn('filter__button', { active: state.prise === 'journey' })}
-          onClick={() => {
-            if (state.prise === 'journey') return;
-            setState({ page: 1, total_pages: null, prise: 'journey', count: 6, data: [] });
-          }}
+          onClick={handleFilter('journey')}
         >
           Главный приз
         </button>

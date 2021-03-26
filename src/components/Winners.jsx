@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from '../axios';
-import cn from 'classnames';
+import Filter from './Filter';
+import Header from './Header';
+import Mobile from './Mobile';
+import PhoneInput from './PhoneInput';
 
-import { useForm, Controller } from 'react-hook-form';
-import InputMask from 'react-input-mask';
-
-const Winners = () => {
+const Winners = ({ isMobile }) => {
   const [state, setState] = useState({
     page: 1,
     total_pages: null,
@@ -32,60 +32,37 @@ const Winners = () => {
     loadMore();
   }, [state.page, state.prise]);
 
-  const { handleSubmit, control, reset, setValue } = useForm();
-  const onSubmit = async ({ tel }) => {
-    const response = await axios.get(`?phone=${tel}`);
-    setState((prev) => {
-      const { checks } = response.data;
-      return { ...prev, data: checks, message: 'Ваш телефон не найден среди победителей' };
-    });
-    reset();
-    setValue('tel', '');
-  };
-
   const handleFilter = (prise) => () => {
     if (state.prise === prise) return;
     setState({ page: 1, total_pages: null, prise, count: 6, data: [] });
   };
 
+  const handleShowMore = () => {
+    if (state.page < state.total_pages) {
+      setState((prev) => {
+        return { ...prev, page: prev.page + 1, count: prev.count + 4 };
+      });
+    } else
+      setState((prev) => {
+        return { ...prev, count: prev.count + 4 };
+      });
+  };
+
+  const onSubmitPhone = (response) => {
+    setState((prev) => {
+      const { checks } = response.data;
+      return { ...prev, data: checks, message: 'Ваш телефон не найден среди победителей' };
+    });
+  };
+
+  if (isMobile) {
+    return <Mobile message={state.message} data={state.data} onSubmitPhone={onSubmitPhone} />;
+  }
   return (
     <>
-      <form onSubmit={handleSubmit(onSubmit)} className="form">
-        <Controller
-          name="tel"
-          as={InputMask}
-          control={control}
-          defaultValue=""
-          mask="+7 (999) 999-99-99"
-          alwaysShowMask
-          className="form__input"
-        />
-        <button type="submit" className="form__button" />
-      </form>
-
-      <div className="filter">
-        <button
-          type="button"
-          className={cn('filter__button', { active: state.prise === 'hoodie' })}
-          onClick={handleFilter('hoodie')}
-        >
-          Ежедневный приз
-        </button>
-        <button
-          type="button"
-          className={cn('filter__button', { active: state.prise === 'jbl_speaker' })}
-          onClick={handleFilter('jbl_speaker')}
-        >
-          Еженедельный приз
-        </button>
-        <button
-          type="button"
-          className={cn('filter__button', { active: state.prise === 'journey' })}
-          onClick={handleFilter('journey')}
-        >
-          Главный приз
-        </button>
-      </div>
+      <Header />
+      <PhoneInput onSubmitPhone={onSubmitPhone} />
+      <Filter prise={state.prise} handleFilter={handleFilter} />
 
       <ul className="list">
         {state.data.length === 0 ? (
@@ -101,21 +78,8 @@ const Winners = () => {
         )}
       </ul>
 
-      {state.count >= state.data.length ? null : (
-        <button
-          type="button"
-          className="button-more"
-          onClick={() => {
-            if (state.page < state.total_pages) {
-              setState((prev) => {
-                return { ...prev, page: prev.page + 1, count: prev.count + 4 };
-              });
-            } else
-              setState((prev) => {
-                return { ...prev, count: prev.count + 4 };
-              });
-          }}
-        >
+      {state.count < state.data.length && (
+        <button type="button" className="button-more" onClick={handleShowMore}>
           Показать ещё
         </button>
       )}

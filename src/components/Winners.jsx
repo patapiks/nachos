@@ -5,7 +5,7 @@ import Header from './Header';
 import Mobile from './Mobile';
 import PhoneInput from './PhoneInput';
 
-const Winners = ({ isMobile }) => {
+const Winners = React.memo(({ isMobile }) => {
   const [state, setState] = useState({
     page: 1,
     total_pages: null,
@@ -85,6 +85,6 @@ const Winners = ({ isMobile }) => {
       )}
     </>
   );
-};
+});
 
 export default Winners;
